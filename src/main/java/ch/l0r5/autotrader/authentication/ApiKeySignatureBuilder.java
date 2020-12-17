@@ -2,22 +2,58 @@ package ch.l0r5.autotrader.authentication;
 
 import com.google.common.hash.Hashing;
 
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
 
+import ch.l0r5.autotrader.Operation;
 import lombok.extern.slf4j.Slf4j;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
+@Component
+@SuppressWarnings("UnstableApiUsage")
 public class ApiKeySignatureBuilder {
 
-    public String createSignature() {
+    public String createSignature(Map<String, String> qParams, Operation operation) {
+        byte[] byteKey = readSecret();
+        long nonce = new Date().getTime();
+        String message = "nonce=" + nonce + getQueryString(qParams);
+        String urlPath = "/0/private/" + operation.getCode();
+        byte[] sha256 = Hashing.sha256()
+                .newHasher()
+                .putString(nonce + message, UTF_8)
+                .hash()
+                .asBytes();
+        byte[] hmac = Hashing.hmacSha512(byteKey)
+                .newHasher()
+                .putString(urlPath, UTF_8)
+                .putBytes(sha256)
+                .hash()
+                .asBytes();
+        String signature = Base64.getEncoder().encodeToString(hmac);
+        log.info("Signature sucessfully created.");
+        return signature;
+    }
+
+    private String getQueryString(Map<String, String> qParams) {
+        StringBuilder result = new StringBuilder();
+        qParams.forEach((k, v) -> {
+            result.append("&").append(k).append("=").append(v);
+        });
+        return result.toString();
+    }
+
+    protected byte[] readSecret() {
         File secretFile = new File("src/main/resources/secrets/private-key-api.txt");
-        String secretData = "";
+        String secretData = null;
         try {
             Scanner scanner = new Scanner(secretFile);
             while (scanner.hasNextLine()) {
@@ -26,26 +62,7 @@ public class ApiKeySignatureBuilder {
         } catch (FileNotFoundException e) {
             log.error("API Secret not found", e);
         }
-
-        byte[] apiSecret = Base64.getDecoder().decode(secretData);
-        long nonce = (new Date().getTime() / 1000) * 1000;
-        String postData = "nonce=" + nonce + "&asset=xxbt";
-        String urlPath = "/0/private/Balance";
-
-        String sha256 = Hashing.sha256()
-                .hashString(nonce + postData, UTF_8)
-                .toString();
-
-        byte[] hmac = Hashing.hmacSha512(apiSecret)
-                .newHasher()
-                .putString(urlPath + sha256, UTF_8)
-                .hash()
-                .asBytes();
-
-        String resultSignature = Base64.getEncoder().encodeToString(hmac);
-
-        log.info("Nonce: {}", nonce);
-        log.info("Signature: {}", resultSignature);
-        return resultSignature;
+        if (secretData == null) log.error("API Secret File has no content.");
+        return Base64.getDecoder().decode(secretData);
     }
 }
