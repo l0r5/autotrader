@@ -1,4 +1,4 @@
-package ch.l0r5.autotrader.authentication;
+package ch.l0r5.autotrader.api.authentication;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

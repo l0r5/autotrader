@@ -1,4 +1,4 @@
-package ch.l0r5.autotrader;
+package ch.l0r5.autotrader.api.controllers;
 
 public enum Operation {
     BALANCE("Balance"),

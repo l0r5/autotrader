@@ -1,4 +1,9 @@
-package ch.l0r5.autotrader;
+package ch.l0r5.autotrader.api.controllers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,32 +14,52 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
-import ch.l0r5.autotrader.authentication.ApiAuthenticationHandler;
-import ch.l0r5.autotrader.authentication.ApiKeySignature;
+import ch.l0r5.autotrader.api.authentication.ApiAuthenticationHandler;
+import ch.l0r5.autotrader.api.authentication.ApiKeySignature;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class Broker {
+public class PlatformController {
 
     private static final String BASE_URL = "https://api.kraken.com";
     private final ApiAuthenticationHandler authHandler;
 
-    public Broker(ApiAuthenticationHandler authHandler) {
+    public PlatformController(ApiAuthenticationHandler authHandler) {
         this.authHandler = authHandler;
     }
 
-    ResponseEntity<String> getCurrentBalance() {
+    public Map<String, BigDecimal> getCurrentBalance() {
+        return parseJson(requestCurrentBalance());
+    }
+
+    private Map<String, BigDecimal> parseJson(String responseBody) {
+        Map<String, BigDecimal> result = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode rootNode = mapper.readTree(responseBody);
+            result = mapper.convertValue(rootNode.get("result"), new TypeReference<Map<String, BigDecimal>>() {
+            });
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private String requestCurrentBalance() {
         Map<String, String> qParams = Collections.singletonMap("asset", "xxbt");
         String path = "/0/private/" + Operation.BALANCE.getCode();
         ApiKeySignature signature = authHandler.createSignature(qParams, path);
         HttpHeaders headers = createHttpHeaders(signature);
         MultiValueMap<String, String> content = createMessageBody(qParams, signature);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(content, headers);
-        return new RestTemplate().postForEntity(BASE_URL + path, request, String.class);
+        ResponseEntity<String> response = new RestTemplate().postForEntity(BASE_URL + path, request, String.class);
+        return response.getBody();
     }
 
     private HttpHeaders createHttpHeaders(ApiKeySignature signature) {
