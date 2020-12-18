@@ -4,7 +4,7 @@ public enum Operation {
     BALANCE("Balance"),
     TRADEBALANCE("TradeBalance");
 
-    private String code;
+    private final String code;
 
     Operation(String code) {
         this.code = code;

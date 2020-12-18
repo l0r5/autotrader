@@ -10,59 +10,58 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicReference;
 
-import ch.l0r5.autotrader.Operation;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import static ch.l0r5.autotrader.utils.DataFormatUtils.getQueryString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
+@Getter
 @Component
 @SuppressWarnings("UnstableApiUsage")
-public class ApiKeySignatureBuilder {
+public class ApiAuthenticationHandler {
 
-    public String createSignature(Map<String, String> qParams, Operation operation) {
-        byte[] byteKey = readSecret();
+    private final String API_PUBLIC_KEY = readFromFile(KeyType.PUBLIC);
+    private final byte[] API_PRIVATE_KEY = Base64.getDecoder().decode(readFromFile(KeyType.PRIVATE));
+
+    public ApiKeySignature createSignature(Map<String, String> qParams, String urlPath) {
         long nonce = new Date().getTime();
         String message = "nonce=" + nonce + getQueryString(qParams);
-        String urlPath = "/0/private/" + operation.getCode();
         byte[] sha256 = Hashing.sha256()
                 .newHasher()
                 .putString(nonce + message, UTF_8)
                 .hash()
                 .asBytes();
-        byte[] hmac = Hashing.hmacSha512(byteKey)
+        byte[] hmac = Hashing.hmacSha512(API_PRIVATE_KEY)
                 .newHasher()
                 .putString(urlPath, UTF_8)
                 .putBytes(sha256)
                 .hash()
                 .asBytes();
         String signature = Base64.getEncoder().encodeToString(hmac);
-        log.info("Signature sucessfully created.");
-        return signature;
+        log.info("Signature successfully created.");
+        return ApiKeySignature.builder()
+                .nonce(nonce)
+                .urlPath(urlPath)
+                .message(message)
+                .signature(signature)
+                .build();
     }
 
-    private String getQueryString(Map<String, String> qParams) {
-        StringBuilder result = new StringBuilder();
-        qParams.forEach((k, v) -> {
-            result.append("&").append(k).append("=").append(v);
-        });
-        return result.toString();
-    }
-
-    protected byte[] readSecret() {
-        File secretFile = new File("src/main/resources/secrets/private-key-api.txt");
-        String secretData = null;
+    private String readFromFile(KeyType keyType) {
+        File secretFile = new File("src/main/resources/secrets/" + keyType.getCode() + ".txt");
+        String keyData = null;
         try {
             Scanner scanner = new Scanner(secretFile);
             while (scanner.hasNextLine()) {
-                secretData = scanner.nextLine();
+                keyData = scanner.nextLine();
             }
         } catch (FileNotFoundException e) {
             log.error("API Secret not found", e);
         }
-        if (secretData == null) log.error("API Secret File has no content.");
-        return Base64.getDecoder().decode(secretData);
+        if (keyData == null) log.error("API Secret File has no content.");
+        return keyData;
     }
 }
