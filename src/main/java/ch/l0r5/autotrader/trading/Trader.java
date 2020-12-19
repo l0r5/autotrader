@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.l0r5.autotrader.api.controllers.PlatformController;
-import ch.l0r5.autotrader.wallet.Balance;
+import ch.l0r5.autotrader.api.dto.Balance;
+import ch.l0r5.autotrader.api.dto.OpenOrders;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,22 +17,29 @@ import lombok.extern.slf4j.Slf4j;
 public class Trader {
 
     private final PlatformController platformController;
-    private final Balance balance;
+    private Balance balance;
     private List<String> cryptoWatchList;
+    private OpenOrders openOrders;
 
     public Trader(PlatformController platformController) {
         this.platformController = platformController;
         this.balance = new Balance();
         this.cryptoWatchList = new ArrayList<>();
+        this.openOrders = new OpenOrders();
     }
 
     public void updateBalances() {
-        this.balance.setCurrentBalance(platformController.getCurrentBalance());
+        this.balance = platformController.getCurrentBalance();
         log.info("Updated balance. New Balance: {}", this.balance.getCurrentBalance());
     }
 
     public void updatePrices() {
         //TODO: implement
+    }
+
+    public void updateOpenOrders() {
+        this.openOrders = platformController.getOpenOrders();
+        log.info("Updated OpenOrders: {}", this.openOrders.toString());
     }
 
 

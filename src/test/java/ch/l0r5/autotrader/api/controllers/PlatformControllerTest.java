@@ -21,4 +21,9 @@ class PlatformControllerTest {
         assertNotNull(platformController.getCurrentBalance());
     }
 
+    @Test
+    void testGetOpenOrders() {
+        assertNotNull(platformController.getOpenOrders());
+    }
+
 }

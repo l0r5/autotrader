@@ -2,7 +2,8 @@ package ch.l0r5.autotrader.api.controllers;
 
 public enum Operation {
     BALANCE("Balance"),
-    TRADEBALANCE("TradeBalance");
+    TRADEBALANCE("TradeBalance"),
+    OPENORDERS("OpenOrders");
 
     private final String code;
 
@@ -10,7 +11,7 @@ public enum Operation {
         this.code = code;
     }
 
-    public String getCode(){
+    public String getCode() {
         return code;
     }
 }
