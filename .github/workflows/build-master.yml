@@ -1,14 +1,11 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Maven CI Build
+name: Maven CI Master
 
 on:
   push:
-    branches: 
-      - master
-      - feature/*
-      - bugfix/*
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
