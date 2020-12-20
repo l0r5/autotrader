@@ -10,9 +10,8 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Balance {
+public class BalanceDto {
 
     @JsonAlias(value = "result")
     private Map<String, BigDecimal> currentBalance;
-
 }

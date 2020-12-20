@@ -9,9 +9,9 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OpenOrders {
+public class OpenOrdersDto {
 
     @JsonAlias(value = "open")
-    private Map<String, Order> orders;
+    private Map<String, OrderDto> orders;
 
 }

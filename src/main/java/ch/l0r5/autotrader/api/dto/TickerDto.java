@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Ticker {
+public class TickerDto {
 
     @JsonAlias(value = "a")
     private BigDecimal[] askArr;

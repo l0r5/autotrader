@@ -8,9 +8,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.l0r5.autotrader.api.dto.Balance;
-import ch.l0r5.autotrader.api.dto.OpenOrders;
-import ch.l0r5.autotrader.api.dto.Ticker;
+import ch.l0r5.autotrader.api.dto.BalanceDto;
+import ch.l0r5.autotrader.api.dto.OpenOrdersDto;
+import ch.l0r5.autotrader.api.dto.TickerDto;
+import ch.l0r5.autotrader.api.enums.Operation;
+import ch.l0r5.autotrader.broker.models.Order;
 import ch.l0r5.autotrader.utils.DataFormatUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,43 +27,57 @@ public class KrakenPlatformController implements PlatformController {
     }
 
     @Override
-    public Balance getCurrentBalance() {
-        Balance balance = new Balance();
+    public BalanceDto getCurrentBalance() {
+        BalanceDto balanceDto = new BalanceDto();
         try {
-            balance = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestCurrentBalance()), Balance.class);
+            balanceDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestCurrentBalance()), BalanceDto.class);
         } catch (JsonProcessingException e) {
             log.error("Error during Balance update processing: ", e);
         }
-        return balance;
+        return balanceDto;
     }
 
     @Override
-    public OpenOrders getOpenOrders() {
-        OpenOrders openOrders = new OpenOrders();
+    public OpenOrdersDto getOpenOrders() {
+        OpenOrdersDto openOrdersDto = new OpenOrdersDto();
         try {
-            openOrders = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestOpenOrders()).get("result"), OpenOrders.class);
+            openOrdersDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestOpenOrders()).get("result"), OpenOrdersDto.class);
         } catch (JsonProcessingException e) {
             log.error("Error during OpenOrders update processing: ", e);
         }
-        return openOrders;
+        return openOrdersDto;
+    }
+
+    @Override
+    public void addOrder(Order order) {
+        Map<String, String> qParams = new HashMap<>();
+        qParams.put("pair", order.getPair());
+        qParams.put("type", order.getType().getCode());
+        qParams.put("ordertype", order.getOrderType().getCode());
+        qParams.put("price", order.getPrice().toString());
+        qParams.put("volume", order.getVolume().toString());
+        if (order.getPrice2() != null) qParams.put("price2", order.getPrice2().toString());
+        if (order.getLeverage() != null) qParams.put("leverage", order.getLeverage().toString());
+        String path = "/0/private/" + Operation.ADD_ORDER.getCode();
+        restHandler.makePostCall(qParams, path);
     }
 
     @Override
     public void cancelOpenOrder(String txId) {
         Map<String, String> qParams = Collections.singletonMap("txid", txId);
-        String path = "/0/private/" + Operation.CANCELORDER.getCode();
+        String path = "/0/private/" + Operation.CANCEL_ORDER.getCode();
         restHandler.makePostCall(qParams, path);
     }
 
     @Override
-    public Ticker getTicker(String pair) {
-        Ticker ticker = new Ticker();
+    public TickerDto getTicker(String pair) {
+        TickerDto tickerDto = new TickerDto();
         try {
-            ticker = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestTicker(pair)).get("result").get(pair), Ticker.class);
+            tickerDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestTicker(pair)).get("result").get(pair), TickerDto.class);
         } catch (JsonProcessingException e) {
             log.error("Error during GetTicker processing: ", e);
         }
-        return ticker;
+        return tickerDto;
     }
 
     private String requestCurrentBalance() {
@@ -72,7 +88,7 @@ public class KrakenPlatformController implements PlatformController {
 
     private String requestOpenOrders() {
         Map<String, String> qParams = new HashMap<>();
-        String path = "/0/private/" + Operation.OPENORDERS.getCode();
+        String path = "/0/private/" + Operation.OPEN_ORDERS.getCode();
         return restHandler.makePostCall(qParams, path);
     }
 

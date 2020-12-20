@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.l0r5.autotrader.api.controllers.Operation;
+import ch.l0r5.autotrader.api.enums.Operation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -48,7 +48,7 @@ class ApiAuthenticationHandlerTest {
     @Test
     void testCreateSignature_withOpenOrders_expectSignature() {
         Map<String, String> qParams = new HashMap<>();
-        String path = "/0/private/" + Operation.OPENORDERS.getCode();
+        String path = "/0/private/" + Operation.OPEN_ORDERS.getCode();
         ApiKeySignature signature = authHandler.createSignature(qParams, path);
         assertFalse(signature.getSignature().isEmpty());
     }

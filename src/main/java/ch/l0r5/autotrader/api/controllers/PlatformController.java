@@ -1,16 +1,19 @@
 package ch.l0r5.autotrader.api.controllers;
 
-import ch.l0r5.autotrader.api.dto.Balance;
-import ch.l0r5.autotrader.api.dto.OpenOrders;
-import ch.l0r5.autotrader.api.dto.Ticker;
+import ch.l0r5.autotrader.api.dto.BalanceDto;
+import ch.l0r5.autotrader.api.dto.OpenOrdersDto;
+import ch.l0r5.autotrader.api.dto.TickerDto;
+import ch.l0r5.autotrader.broker.models.Order;
 
 public interface PlatformController {
 
-    Balance getCurrentBalance();
+    BalanceDto getCurrentBalance();
 
-    OpenOrders getOpenOrders();
+    OpenOrdersDto getOpenOrders();
 
     void cancelOpenOrder(String refId);
 
-    Ticker getTicker(String pair);
+    TickerDto getTicker(String pair);
+
+    void addOrder(Order order);
 }

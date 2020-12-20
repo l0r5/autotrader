@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Order {
+public class OrderDto {
 
     @JsonAlias(value = "refid")
     private String refId;

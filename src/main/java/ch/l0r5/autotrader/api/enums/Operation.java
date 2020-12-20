@@ -1,9 +1,10 @@
-package ch.l0r5.autotrader.api.controllers;
+package ch.l0r5.autotrader.api.enums;
 
 public enum Operation {
     BALANCE("Balance"),
-    OPENORDERS("OpenOrders"),
-    CANCELORDER("CancelOrder"),
+    OPEN_ORDERS("OpenOrders"),
+    ADD_ORDER("AddOrder"),
+    CANCEL_ORDER("CancelOrder"),
     TICKER("Ticker");
 
     private final String code;
