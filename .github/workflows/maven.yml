@@ -5,7 +5,10 @@ name: Maven CI Build
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - master
+      - feature/*
+      - bugfix/*
   pull_request:
     branches: [ master ]
 
