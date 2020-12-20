@@ -59,7 +59,7 @@ class KrakenPlatformControllerTest {
 
     @Test
     void testGetOpenOrders_expectOneOpenOrders() {
-        String expectedString = "{ABCD-1234-ABC123=Order(refId=null, userRef=0, status=open, openTm=123.123, startTm=0, expireTm=0, descr={pair=XBTCHF, type=buy, ordertype=limit, price=300.0, price2=0, leverage=none, order=buy 1.00000000 XBTCHF @ limit 300.0, close=}, vol=1.00000000, volExec=0E-8, cost=0.00000, fee=0.00000, price=0.00000, stopPrice=0.00000, limitPrice=0.00000, misc=, oflags=fciq)}";
+        String expectedString = "{ABCD-1234-ABC123=OrderDto(refId=null, userRef=0, status=open, openTm=123.123, startTm=0, expireTm=0, descr={pair=XBTCHF, type=buy, ordertype=limit, price=300.0, price2=0, leverage=none, order=buy 1.00000000 XBTCHF @ limit 300.0, close=}, vol=1.00000000, volExec=0E-8, cost=0.00000, fee=0.00000, price=0.00000, stopPrice=0.00000, limitPrice=0.00000, misc=, oflags=fciq)}";
         String mockMessage = "{\"error\":[],\"result\":{\"open\":{\"ABCD-1234-ABC123\":{\"refid\":null,\"userref\":0,\"status\":\"open\",\"opentm\":123.123,\"starttm\":0,\"expiretm\":0,\"descr\":{\"pair\":\"XBTCHF\",\"type\":\"buy\",\"ordertype\":\"limit\",\"price\":\"300.0\",\"price2\":\"0\",\"leverage\":\"none\",\"order\":\"buy 1.00000000 XBTCHF @ limit 300.0\",\"close\":\"\"},\"vol\":\"1.00000000\",\"vol_exec\":\"0.00000000\",\"cost\":\"0.00000\",\"fee\":\"0.00000\",\"price\":\"0.00000\",\"stopprice\":\"0.00000\",\"limitprice\":\"0.00000\",\"misc\":\"\",\"oflags\":\"fciq\"}}}}";
         when(restHandler.makePostCall(any(), any())).thenReturn(mockMessage);
         OpenOrdersDto orders = krakenPlatformController.getOpenOrders();
@@ -80,7 +80,7 @@ class KrakenPlatformControllerTest {
     @Test
     void testGetTicker_expectTicker() {
         String pair = "BTC/USD";
-        String expectedString = "Ticker(askArr=[23575.10000, 8, 8.000], bidArr=[23575.00000, 1, 1.000], closedArr=[23575.00000, 0.00297300], volArr=[2821.04995637, 6401.25971027], numberTraders=[15835, 33920], lowArr=[23084.90000, 23084.90000], highArr=[23871.50000, 24288.20000], openingPrice=23871.50000)";
+        String expectedString = "TickerDto(askArr=[23575.10000, 8, 8.000], bidArr=[23575.00000, 1, 1.000], closedArr=[23575.00000, 0.00297300], volArr=[2821.04995637, 6401.25971027], numberTraders=[15835, 33920], lowArr=[23084.90000, 23084.90000], highArr=[23871.50000, 24288.20000], openingPrice=23871.50000)";
         String mockMessage = "{\"error\":[],\"result\":{\"BTC\\/USD\":{\"a\":[\"23575.10000\",\"8\",\"8.000\"],\"b\":[\"23575.00000\",\"1\",\"1.000\"],\"c\":[\"23575.00000\",\"0.00297300\"],\"v\":[\"2821.04995637\",\"6401.25971027\"],\"p\":[\"23473.17484\",\"23687.52161\"],\"t\":[15835,33920],\"l\":[\"23084.90000\",\"23084.90000\"],\"h\":[\"23871.50000\",\"24288.20000\"],\"o\":\"23871.50000\"}}}";
         when(restHandler.makePostCall(any(), any())).thenReturn(mockMessage);
         TickerDto tickerDto = krakenPlatformController.getTicker(pair);
