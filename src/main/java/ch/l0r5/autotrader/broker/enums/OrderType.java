@@ -18,4 +18,11 @@ public enum OrderType {
     public String getCode() {
         return code;
     }
+
+    public static OrderType valueOfCode(String code) {
+        for (OrderType elem : values()) {
+            if (elem.code.equals(code)) return elem;
+        }
+        return null;
+    }
 }

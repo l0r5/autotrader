@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ch.l0r5.autotrader.api.dto.BalanceDto;
@@ -73,7 +74,7 @@ public class KrakenPlatformController implements PlatformController {
     public TickerDto getTicker(String pair) {
         TickerDto tickerDto = new TickerDto();
         try {
-            tickerDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestTicker(pair)).get("result").get(pair), TickerDto.class);
+            tickerDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestTicker(pair)).get("result").get(pair.toUpperCase(Locale.ROOT)), TickerDto.class);
         } catch (JsonProcessingException e) {
             log.error("Error during GetTicker processing: ", e);
         }

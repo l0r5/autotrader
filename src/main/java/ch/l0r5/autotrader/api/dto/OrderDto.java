@@ -7,8 +7,10 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import lombok.Data;
+import lombok.Setter;
 
 @Data
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDto {
 

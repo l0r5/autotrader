@@ -13,4 +13,11 @@ public enum Type {
     public String getCode() {
         return code;
     }
+
+    public static Type valueOfCode(String code) {
+        for (Type elem : values()) {
+            if (elem.code.equals(code)) return elem;
+        }
+        return null;
+    }
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.junit.jupiter.api.Test;
 
-import ch.l0r5.autotrader.utils.pojo.TestJson;
+import ch.l0r5.autotrader.utils.pojo.TestJsonPojo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,10 +29,10 @@ class DataFormatUtilsTest {
     @Test
     void testJsonFromJson_expectTestJsonPojo() {
         String testString = "{ \"title\": \"This is my Test\" }";
-        TestJson result = null;
+        TestJsonPojo result = null;
         try {
             JsonNode node = DataFormatUtils.Json.parse(testString);
-            result = DataFormatUtils.Json.fromJson(node, TestJson.class);
+            result = DataFormatUtils.Json.fromJson(node, TestJsonPojo.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

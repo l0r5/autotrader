@@ -23,6 +23,9 @@ public class TickerDto {
     @JsonAlias(value = "v")
     private BigDecimal[] volArr;
 
+    @JsonAlias(value = "p")
+    private BigDecimal[] volWeightAverPriceArr;
+
     @JsonAlias(value = "t")
     private long[] numberTraders;
 

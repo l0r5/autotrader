@@ -21,7 +21,6 @@ public class BrokerStarterService {
 //        Balance balance = trader.getBalance();
 
 //        broker.updatePrices();
-//        System.out.println();
 
 //        Order limitOrder = Order.builder()
 //                .pair("xbtchf")
@@ -31,6 +30,12 @@ public class BrokerStarterService {
 //                .volume(new BigDecimal("1"))
 //                .build();
 //        broker.placeOrder(limitOrder);
+//        broker.updateOpenOrders();
+
+//        List<Asset> tradeAssets = Arrays.asList(new Asset("ethchf", new BigDecimal("0.00")));
+//        broker.setTradeAssets(tradeAssets);
+//        broker.updatePrices();
+//        System.out.println();
 //        broker.updateOpenOrders();
 
     }
