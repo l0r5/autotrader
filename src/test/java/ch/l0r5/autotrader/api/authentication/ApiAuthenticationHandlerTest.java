@@ -64,6 +64,7 @@ class ApiAuthenticationHandlerTest {
         String path = "src/test/resources/secrets/non-existent.txt";
         authHandler.getAppConfig().setPublicKeyLocation(path);
         assertNull(authHandler.readFromFile(path));
+        authHandler.getAppConfig().setPublicKeyLocation("src/test/resources/secrets/private-key-api.txt");
     }
 
     @Test
