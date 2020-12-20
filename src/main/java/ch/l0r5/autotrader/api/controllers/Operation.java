@@ -4,7 +4,7 @@ public enum Operation {
     BALANCE("Balance"),
     OPENORDERS("OpenOrders"),
     CANCELORDER("CancelOrder"),
-    ;
+    TICKER("Ticker");
 
     private final String code;
 

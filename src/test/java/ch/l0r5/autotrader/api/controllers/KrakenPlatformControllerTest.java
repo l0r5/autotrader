@@ -6,10 +6,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import ch.l0r5.autotrader.api.dto.Balance;
 import ch.l0r5.autotrader.api.dto.OpenOrders;
+import ch.l0r5.autotrader.api.dto.Ticker;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -68,5 +70,17 @@ class KrakenPlatformControllerTest {
         when(restHandler.makePostCall(any(), any())).thenReturn(mockMessage);
         krakenPlatformController.cancelOpenOrder(txId);
         verify(restHandler, times(1)).makePostCall(Collections.singletonMap("txid", txId), "/0/private/CancelOrder");
+    }
+
+    @Test
+    void testGetTicker_expectTicker() {
+        String pair = "BTC/USD";
+        String expectedString = "Ticker(askArr=[23575.10000, 8, 8.000], bidArr=[23575.00000, 1, 1.000], closedArr=[23575.00000, 0.00297300], volArr=[2821.04995637, 6401.25971027], numberTraders=[15835, 33920], lowArr=[23084.90000, 23084.90000], highArr=[23871.50000, 24288.20000], openingPrice=23871.50000)";
+        String mockMessage = "{\"error\":[],\"result\":{\"BTC\\/USD\":{\"a\":[\"23575.10000\",\"8\",\"8.000\"],\"b\":[\"23575.00000\",\"1\",\"1.000\"],\"c\":[\"23575.00000\",\"0.00297300\"],\"v\":[\"2821.04995637\",\"6401.25971027\"],\"p\":[\"23473.17484\",\"23687.52161\"],\"t\":[15835,33920],\"l\":[\"23084.90000\",\"23084.90000\"],\"h\":[\"23871.50000\",\"24288.20000\"],\"o\":\"23871.50000\"}}}";
+        when(restHandler.makePostCall(any(), any())).thenReturn(mockMessage);
+        Ticker ticker = krakenPlatformController.getTicker(pair);
+        assertNotNull(ticker);
+        assertEquals(expectedString, ticker.toString());
+        assertEquals(new BigDecimal("23575.10000"), ticker.getAskArr()[0]);
     }
 }

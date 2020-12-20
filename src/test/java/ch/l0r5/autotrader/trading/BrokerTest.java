@@ -18,32 +18,32 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @DirtiesContext
 @ActiveProfiles("test")
-class TraderTest {
+class BrokerTest {
 
     @MockBean
     PlatformController platformController;
 
     @Autowired
-    Trader trader;
+    Broker broker;
 
     @Test
     void testUpdateBalances_expectExecuteCall() {
         when(platformController.getCurrentBalance()).thenReturn(new Balance());
-        trader.updateBalances();
+        broker.updateBalances();
         verify(platformController, times(1)).getCurrentBalance();
     }
 
     @Test
     void testUpdateOpenOrders_expectExecuteCall() {
         when(platformController.getOpenOrders()).thenReturn(new OpenOrders());
-        trader.updateOpenOrders();
+        broker.updateOpenOrders();
         verify(platformController, times(1)).getOpenOrders();
     }
 
     @Test
     void testCancelOpenOrder_expectOpenOrders() {
         String testTrxId = "test-trx-id";
-        trader.cancelOpenOrder(testTrxId);
+        broker.cancelOpenOrder(testTrxId);
         verify(platformController, times(1)).cancelOpenOrder(testTrxId);
     }
 }

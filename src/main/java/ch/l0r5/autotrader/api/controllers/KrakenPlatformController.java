@@ -10,6 +10,7 @@ import java.util.Map;
 
 import ch.l0r5.autotrader.api.dto.Balance;
 import ch.l0r5.autotrader.api.dto.OpenOrders;
+import ch.l0r5.autotrader.api.dto.Ticker;
 import ch.l0r5.autotrader.utils.DataFormatUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,6 +53,17 @@ public class KrakenPlatformController implements PlatformController {
         restHandler.makePostCall(qParams, path);
     }
 
+    @Override
+    public Ticker getTicker(String pair) {
+        Ticker ticker = new Ticker();
+        try {
+            ticker = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestTicker(pair)).get("result").get(pair), Ticker.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error during GetTicker processing: ", e);
+        }
+        return ticker;
+    }
+
     private String requestCurrentBalance() {
         Map<String, String> qParams = Collections.singletonMap("asset", "xxbt");
         String path = "/0/private/" + Operation.BALANCE.getCode();
@@ -61,6 +73,12 @@ public class KrakenPlatformController implements PlatformController {
     private String requestOpenOrders() {
         Map<String, String> qParams = new HashMap<>();
         String path = "/0/private/" + Operation.OPENORDERS.getCode();
+        return restHandler.makePostCall(qParams, path);
+    }
+
+    private String requestTicker(String pair) {
+        Map<String, String> qParams = Collections.singletonMap("pair", pair);
+        String path = "/0/public/" + Operation.TICKER.getCode();
         return restHandler.makePostCall(qParams, path);
     }
 
