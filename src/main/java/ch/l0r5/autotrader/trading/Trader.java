@@ -33,13 +33,18 @@ public class Trader {
         log.info("Updated balance. New Balance: {}", this.balance.getCurrentBalance());
     }
 
+    public void updateOpenOrders() {
+        this.openOrders = platformController.getOpenOrders();
+        log.info("Updated OpenOrders: {}", openOrders.toString());
+    }
+
     public void updatePrices() {
         //TODO: implement
     }
 
-    public void updateOpenOrders() {
-        this.openOrders = platformController.getOpenOrders();
-        log.info("Updated OpenOrders: {}", this.openOrders.toString());
+    public void cancelOpenOrder(String trxId) {
+        platformController.cancelOpenOrder(trxId);
+        log.info("Canceled OpenOrder with refId: {}", trxId);
     }
 
 

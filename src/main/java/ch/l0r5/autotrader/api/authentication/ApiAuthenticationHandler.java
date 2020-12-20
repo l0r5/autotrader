@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.annotation.PostConstruct;
+
+import ch.l0r5.autotrader.config.AppConfig;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,8 +26,19 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @SuppressWarnings("UnstableApiUsage")
 public class ApiAuthenticationHandler {
 
-    private final String API_PUBLIC_KEY = readFromFile(KeyType.PUBLIC);
-    private final byte[] API_PRIVATE_KEY = Base64.getDecoder().decode(readFromFile(KeyType.PRIVATE));
+    private final AppConfig appConfig;
+    private String apiPublicKey;
+    private byte[] apiPrivateKey;
+
+    public ApiAuthenticationHandler(AppConfig appConfig) {
+        this.appConfig = appConfig;
+    }
+
+    @PostConstruct
+    protected void init() {
+        this.apiPublicKey = readFromFile(appConfig.getPublicKeyLocation());
+        this.apiPrivateKey = Base64.getDecoder().decode(readFromFile(appConfig.getPrivateKeyLocation()));
+    }
 
     public ApiKeySignature createSignature(Map<String, String> qParams, String urlPath) {
         long nonce = new Date().getTime();
@@ -34,7 +48,7 @@ public class ApiAuthenticationHandler {
                 .putString(nonce + message, UTF_8)
                 .hash()
                 .asBytes();
-        byte[] hmac = Hashing.hmacSha512(API_PRIVATE_KEY)
+        byte[] hmac = Hashing.hmacSha512(apiPrivateKey)
                 .newHasher()
                 .putString(urlPath, UTF_8)
                 .putBytes(sha256)
@@ -50,8 +64,8 @@ public class ApiAuthenticationHandler {
                 .build();
     }
 
-    private String readFromFile(KeyType keyType) {
-        File secretFile = new File("src/main/resources/secrets/" + keyType.getCode() + ".txt");
+    protected String readFromFile(String path) {
+        File secretFile = new File(path);
         String keyData = null;
         try {
             Scanner scanner = new Scanner(secretFile);
@@ -59,9 +73,8 @@ public class ApiAuthenticationHandler {
                 keyData = scanner.nextLine();
             }
         } catch (FileNotFoundException e) {
-            log.error("API Secret not found", e);
+            log.error("API Secret not found: ", e);
         }
-        if (keyData == null) log.error("API Secret File has no content.");
         return keyData;
     }
 }

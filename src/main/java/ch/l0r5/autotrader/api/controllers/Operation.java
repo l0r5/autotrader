@@ -2,8 +2,9 @@ package ch.l0r5.autotrader.api.controllers;
 
 public enum Operation {
     BALANCE("Balance"),
-    TRADEBALANCE("TradeBalance"),
-    OPENORDERS("OpenOrders");
+    OPENORDERS("OpenOrders"),
+    CANCELORDER("CancelOrder"),
+    ;
 
     private final String code;
 
