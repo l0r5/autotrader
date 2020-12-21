@@ -9,10 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import ch.l0r5.autotrader.api.controllers.PlatformController;
-import ch.l0r5.autotrader.api.dto.BalanceDto;
+import ch.l0r5.autotrader.api.dto.DtoMapper;
 import ch.l0r5.autotrader.api.dto.TickerDto;
-import ch.l0r5.autotrader.broker.enums.OrderType;
-import ch.l0r5.autotrader.broker.enums.Type;
 import ch.l0r5.autotrader.broker.models.Asset;
 import ch.l0r5.autotrader.broker.models.Order;
 import lombok.Getter;
@@ -26,60 +24,59 @@ import lombok.extern.slf4j.Slf4j;
 public class Broker {
 
     private final PlatformController platformController;
-    private BalanceDto balanceDto;
-    Map<String, Order> openOrders;
+    private Map<String, BigDecimal> balances;
+    private Map<String, Order> openOrders;
     private List<Asset> tradeAssets;
-
 
     public Broker(PlatformController platformController) {
         this.platformController = platformController;
-        this.balanceDto = new BalanceDto();
+        this.balances = new HashMap<>();
         this.tradeAssets = new ArrayList<>();
         this.openOrders = new HashMap<>();
     }
 
     public void updateBalances() {
-        this.balanceDto = platformController.getCurrentBalance();
-        log.info("Updated balance. New Balance: {}", balanceDto.getCurrentBalance());
+        log.info("Updating Balances...");
+        this.balances = platformController.getCurrentBalance().getCurrentBalance();
+        log.info("Updated balance. New Balance: {}", balances.toString());
     }
 
     public void updateOpenOrders() {
-        if (platformController.getOpenOrders() == null || platformController.getOpenOrders().getOrders() == null) {
-            log.info("Updated OpenOrders: No update received.");
-            return;
-        }
-        platformController.getOpenOrders().getOrders().forEach((txId, orderDto) -> {
-            Order order = Order.builder()
-                    .txId(txId)
-                    .pair(orderDto.getDescr().get("pair"))
-                    .type(Type.valueOfCode(orderDto.getDescr().get("type")))
-                    .orderType(OrderType.valueOfCode(orderDto.getDescr().get("ordertype")))
-                    .price(new BigDecimal(orderDto.getDescr().get("price")))
-                    .price2(orderDto.getDescr().get("price2") != null ? new BigDecimal(orderDto.getDescr().get("price2")) : null)
-                    .volume(orderDto.getDescr().get("volume") != null ? new BigDecimal(orderDto.getDescr().get("volume")) : null)
-                    .leverage(orderDto.getDescr().get("leverage") != null && !orderDto.getDescr().get("leverage").equals("none") ? new BigDecimal(orderDto.getDescr().get("leverage")) : null)
-                    .build();
-            this.openOrders.put(txId, order);
-        });
+        log.info("Updating OpenOrders...");
+        this.openOrders = DtoMapper.mapToOrders(platformController.getOpenOrders());
         log.info("Updated OpenOrders: {}", openOrders.toString());
     }
 
     public void updatePrices() {
+        log.info("Updating Prices...");
+        if (tradeAssets.isEmpty()) {
+            log.info("No TradeAssets to update prices.");
+            return;
+        }
         tradeAssets.forEach(asset -> {
             TickerDto tickerDto = platformController.getTicker(asset.getPair());
-            asset.setPrice(tickerDto.getVolWeightAverPriceArr()[0].add(tickerDto.getVolWeightAverPriceArr()[1]).divide(new BigDecimal("2"), 2));
+            BigDecimal price = tickerDto.getVolWeightAverPriceArr()[0].add(tickerDto.getVolWeightAverPriceArr()[1]).divide(new BigDecimal("2"), 2);
+            asset.setPrice(price);
+            log.info("Updated Asset: {} with Price: {}.", asset.getPair(), asset.getPrice());
         });
         log.info("Updated Prices.");
     }
 
     public void placeOrder(Order order) {
+        log.info("Placing Order...");
         platformController.addOrder(order);
         log.info("Order was placed. Order: {}", order.toString());
     }
 
-    public void cancelOpenOrder(String trxId) {
-        platformController.cancelOpenOrder(trxId);
-        log.info("Canceled OpenOrder with refId: {}", trxId);
+    public void cancelOpenOrder(String txId) {
+        log.info("Canceling Order with txId: {} ...", txId);
+        platformController.cancelOpenOrder(txId);
+        log.info("Canceled OpenOrder with refId: {}", txId);
     }
 
+    public void cancelAllOpenOrders() {
+        log.info("Canceling all Open Orders...");
+        openOrders.forEach((txId, order) -> platformController.cancelOpenOrder(txId));
+        log.info("Canceled all Open Orders.");
+    }
 }

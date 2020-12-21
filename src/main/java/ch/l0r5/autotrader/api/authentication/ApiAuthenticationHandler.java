@@ -55,7 +55,6 @@ public class ApiAuthenticationHandler {
                 .hash()
                 .asBytes();
         String signature = Base64.getEncoder().encodeToString(hmac);
-        log.info("Signature successfully created.");
         return ApiKeySignature.builder()
                 .nonce(nonce)
                 .urlPath(urlPath)

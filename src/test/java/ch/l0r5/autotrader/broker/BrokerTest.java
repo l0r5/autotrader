@@ -23,6 +23,7 @@ import ch.l0r5.autotrader.broker.models.Asset;
 import ch.l0r5.autotrader.broker.models.Order;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,16 +41,19 @@ class BrokerTest {
 
     @Test
     void testUpdateBalances_expectExecuteCall() {
-        when(platformController.getCurrentBalance()).thenReturn(new BalanceDto());
+        broker.setBalances(Collections.emptyMap());
+        assertTrue(broker.getBalances().isEmpty());
+        when(platformController.getCurrentBalance()).thenReturn(new BalanceDto(Collections.singletonMap("EUR", new BigDecimal("100"))));
         broker.updateBalances();
         verify(platformController, times(1)).getCurrentBalance();
+        assertEquals(new BigDecimal("100"), broker.getBalances().get("EUR"));
     }
 
     @Test
     void testUpdateOpenOrders_withEmptyOrderDto_expectExecuteCall() {
         when(platformController.getOpenOrders()).thenReturn(new OpenOrdersDto());
         broker.updateOpenOrders();
-        verify(platformController, times(2)).getOpenOrders();
+        verify(platformController, times(1)).getOpenOrders();
     }
 
     @Test
@@ -66,7 +70,7 @@ class BrokerTest {
         testOpenOrder.setOrders(Collections.singletonMap(txId, orderDto));
         when(platformController.getOpenOrders()).thenReturn(testOpenOrder);
         broker.updateOpenOrders();
-        verify(platformController, times(3)).getOpenOrders();
+        verify(platformController, times(1)).getOpenOrders();
         assertEquals("ethchf", broker.getOpenOrders().get(txId).getPair());
         assertEquals(Type.BUY, broker.getOpenOrders().get(txId).getType());
     }

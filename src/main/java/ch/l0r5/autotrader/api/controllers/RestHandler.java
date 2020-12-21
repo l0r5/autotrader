@@ -14,7 +14,9 @@ import java.util.Map;
 import ch.l0r5.autotrader.api.authentication.ApiAuthenticationHandler;
 import ch.l0r5.autotrader.api.authentication.ApiKeySignature;
 import ch.l0r5.autotrader.config.AppConfig;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class RestHandler {
 
@@ -31,7 +33,9 @@ public class RestHandler {
         HttpHeaders headers = createHttpHeaders(signature);
         MultiValueMap<String, String> content = createMessageBody(qParams, signature);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(content, headers);
+        log.info("Executing POST call with path: {}, qparams: {}", path, qParams.toString());
         ResponseEntity<String> response = new RestTemplate().postForEntity(appConfig.getBaseUrl() + path, request, String.class);
+        log.info("POST Response: {}", response);
         return response.getBody();
     }
 
