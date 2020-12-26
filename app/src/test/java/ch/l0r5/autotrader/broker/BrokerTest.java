@@ -18,10 +18,10 @@ import ch.l0r5.autotrader.api.dto.BalanceDto;
 import ch.l0r5.autotrader.api.dto.OpenOrdersDto;
 import ch.l0r5.autotrader.api.dto.OrderDto;
 import ch.l0r5.autotrader.api.dto.TickerDto;
-import ch.l0r5.autotrader.broker.enums.OrderType;
-import ch.l0r5.autotrader.broker.enums.Type;
-import ch.l0r5.autotrader.broker.models.Asset;
-import ch.l0r5.autotrader.broker.models.Order;
+import ch.l0r5.autotrader.model.Asset;
+import ch.l0r5.autotrader.model.Order;
+import ch.l0r5.autotrader.model.enums.OrderType;
+import ch.l0r5.autotrader.model.enums.Type;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -1,9 +1,9 @@
-package ch.l0r5.autotrader.broker.models;
+package ch.l0r5.autotrader.model;
 
 import java.math.BigDecimal;
 
-import ch.l0r5.autotrader.broker.enums.OrderType;
-import ch.l0r5.autotrader.broker.enums.Type;
+import ch.l0r5.autotrader.model.enums.OrderType;
+import ch.l0r5.autotrader.model.enums.Type;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

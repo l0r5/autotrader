@@ -13,7 +13,7 @@ import ch.l0r5.autotrader.api.dto.BalanceDto;
 import ch.l0r5.autotrader.api.dto.OpenOrdersDto;
 import ch.l0r5.autotrader.api.dto.TickerDto;
 import ch.l0r5.autotrader.api.enums.Operation;
-import ch.l0r5.autotrader.broker.models.Order;
+import ch.l0r5.autotrader.model.Order;
 import ch.l0r5.autotrader.utils.DataFormatUtils;
 import lombok.extern.slf4j.Slf4j;
 

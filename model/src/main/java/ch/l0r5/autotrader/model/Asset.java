@@ -1,4 +1,4 @@
-package ch.l0r5.autotrader.broker.models;
+package ch.l0r5.autotrader.model;
 
 import java.math.BigDecimal;
 

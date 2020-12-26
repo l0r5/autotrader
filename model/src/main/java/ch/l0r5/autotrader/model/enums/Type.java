@@ -1,4 +1,4 @@
-package ch.l0r5.autotrader.broker.enums;
+package ch.l0r5.autotrader.model.enums;
 
 public enum Type {
     BUY("buy"),

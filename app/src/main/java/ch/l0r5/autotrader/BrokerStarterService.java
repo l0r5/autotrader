@@ -10,10 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 import ch.l0r5.autotrader.broker.Broker;
-import ch.l0r5.autotrader.broker.enums.OrderType;
-import ch.l0r5.autotrader.broker.enums.Type;
-import ch.l0r5.autotrader.broker.models.Asset;
-import ch.l0r5.autotrader.broker.models.Order;
+import ch.l0r5.autotrader.model.Asset;
+import ch.l0r5.autotrader.model.Order;
+import ch.l0r5.autotrader.model.enums.OrderType;
+import ch.l0r5.autotrader.model.enums.Type;
+
 
 @Service
 @Profile("!test")
