@@ -1,5 +1,6 @@
 package ch.l0r5.autotrader.broker;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,8 +72,8 @@ class BrokerTest {
         when(platformController.getOpenOrders()).thenReturn(testOpenOrder);
         broker.updateOpenOrders();
         verify(platformController, times(1)).getOpenOrders();
-        assertEquals("ethchf", broker.getOpenOrders().get(txId).getPair());
-        assertEquals(Type.BUY, broker.getOpenOrders().get(txId).getType());
+        Assertions.assertEquals("ethchf", broker.getOpenOrders().get(txId).getPair());
+        Assertions.assertEquals(Type.BUY, broker.getOpenOrders().get(txId).getType());
     }
 
     @Test

@@ -14,10 +14,10 @@ import java.util.Scanner;
 import javax.annotation.PostConstruct;
 
 import ch.l0r5.autotrader.config.AppConfig;
+import ch.l0r5.autotrader.utils.DataFormatUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import static ch.l0r5.autotrader.utils.DataFormatUtils.getQueryString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
@@ -42,7 +42,7 @@ public class ApiAuthenticationHandler {
 
     public ApiKeySignature createSignature(Map<String, String> qParams, String urlPath) {
         long nonce = new Date().getTime();
-        String message = "nonce=" + nonce + getQueryString(qParams);
+        String message = "nonce=" + nonce + DataFormatUtils.getQueryString(qParams);
         byte[] sha256 = Hashing.sha256()
                 .newHasher()
                 .putString(nonce + message, UTF_8)
