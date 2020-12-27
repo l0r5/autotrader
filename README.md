@@ -38,4 +38,4 @@ accordingly, fully automatic.
     $ mvn clean install
     ```
 
-5. Run AutoTraderApplication.java
+5. Run BrokerApplication.java
