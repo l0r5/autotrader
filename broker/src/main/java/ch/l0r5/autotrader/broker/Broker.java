@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import ch.l0r5.autotrader.api.controllers.PlatformController;
-import ch.l0r5.autotrader.api.dto.DtoMapper;
-import ch.l0r5.autotrader.api.dto.TickerDto;
 import ch.l0r5.autotrader.model.Asset;
 import ch.l0r5.autotrader.model.Order;
 import lombok.Getter;
@@ -43,7 +41,7 @@ public class Broker {
 
     public void updateOpenOrders() {
         log.info("Updating OpenOrders...");
-        this.openOrders = DtoMapper.mapToOrders(platformController.getOpenOrders());
+        this.openOrders = platformController.getOpenOrders();
         log.info("Updated OpenOrders: {}", openOrders.toString());
     }
 
@@ -54,8 +52,8 @@ public class Broker {
             return;
         }
         tradeAssets.forEach(asset -> {
-            TickerDto tickerDto = platformController.getTicker(asset.getPair());
-            BigDecimal price = tickerDto.getVolWeightAverPriceArr()[0].add(tickerDto.getVolWeightAverPriceArr()[1]).divide(new BigDecimal("2"), 2);
+            BigDecimal[] volWeightAverPriceArr = platformController.getTicker(asset.getPair()).getVolWeightAverPriceArr();
+            BigDecimal price = volWeightAverPriceArr[0].add(volWeightAverPriceArr[1]).divide(new BigDecimal("2"), 2);
             asset.setPrice(price);
             log.info("Updated Asset: {} with Price: {}.", asset.getPair(), asset.getPrice());
         });

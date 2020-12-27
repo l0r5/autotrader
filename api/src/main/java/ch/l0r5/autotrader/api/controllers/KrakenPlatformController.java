@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import ch.l0r5.autotrader.api.dto.BalanceDto;
+import ch.l0r5.autotrader.api.dto.DtoMapper;
 import ch.l0r5.autotrader.api.dto.OpenOrdersDto;
 import ch.l0r5.autotrader.api.dto.TickerDto;
 import ch.l0r5.autotrader.api.enums.Operation;
@@ -39,14 +40,15 @@ public class KrakenPlatformController implements PlatformController {
     }
 
     @Override
-    public OpenOrdersDto getOpenOrders() {
-        OpenOrdersDto openOrdersDto = new OpenOrdersDto();
+    public Map<String, Order> getOpenOrders() {
+        Map<String, Order> openOrders = Collections.emptyMap();
         try {
-            openOrdersDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestOpenOrders()).get("result"), OpenOrdersDto.class);
+            OpenOrdersDto openOrdersDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestOpenOrders()).get("result"), OpenOrdersDto.class);
+            openOrders = DtoMapper.mapToOrders(openOrdersDto);
         } catch (JsonProcessingException e) {
             log.error("Error during OpenOrders update processing: ", e);
         }
-        return openOrdersDto;
+        return openOrders;
     }
 
     @Override

@@ -10,14 +10,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import ch.l0r5.autotrader.api.authentication.ApiAuthenticationHandler;
 import ch.l0r5.autotrader.api.controllers.PlatformController;
 import ch.l0r5.autotrader.api.dto.BalanceDto;
-import ch.l0r5.autotrader.api.dto.OpenOrdersDto;
-import ch.l0r5.autotrader.api.dto.OrderDto;
 import ch.l0r5.autotrader.api.dto.TickerDto;
 import ch.l0r5.autotrader.model.Asset;
 import ch.l0r5.autotrader.model.Order;
@@ -56,7 +53,7 @@ class BrokerTest {
 
     @Test
     void testUpdateOpenOrders_withEmptyOrderDto_expectExecuteCall() {
-        when(platformController.getOpenOrders()).thenReturn(new OpenOrdersDto());
+        when(platformController.getOpenOrders()).thenReturn(Collections.emptyMap());
         broker.updateOpenOrders();
         verify(platformController, times(1)).getOpenOrders();
     }
@@ -64,16 +61,15 @@ class BrokerTest {
     @Test
     void testUpdateOpenOrders_withFilledOrderDto_expectExecuteCall() {
         String txId = "ABC-123";
-        OpenOrdersDto testOpenOrder = new OpenOrdersDto();
-        Map<String, String> descr = new HashMap<>();
-        descr.put("pair", "ethchf");
-        descr.put("type", "buy");
-        descr.put("ordertype", "limit");
-        descr.put("price", "123");
-        OrderDto orderDto = new OrderDto();
-        orderDto.setDescr(descr);
-        testOpenOrder.setOrders(Collections.singletonMap(txId, orderDto));
-        when(platformController.getOpenOrders()).thenReturn(testOpenOrder);
+        Order testOrder = Order.builder()
+                .txId(txId)
+                .pair("ethchf")
+                .type(Type.BUY)
+                .orderType(OrderType.LIMIT)
+                .price(new BigDecimal("123"))
+                .build();
+        Map<String, Order> testOpenOrders = Collections.singletonMap(txId, testOrder);
+        when(platformController.getOpenOrders()).thenReturn(testOpenOrders);
         broker.updateOpenOrders();
         verify(platformController, times(1)).getOpenOrders();
         Assertions.assertEquals("ethchf", broker.getOpenOrders().get(txId).getPair());
