@@ -7,7 +7,13 @@
         <groupId>ch.l0r5</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>broker</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -17,12 +23,4 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
-
 </project>
