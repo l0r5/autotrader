@@ -23,14 +23,15 @@ Current status of master build:
 
         .
         ├── ...
-        ├── src                    
-        │   ├── main              
-        │       ├── resources           
-        │           ├── secrets                  
-        │               ├── private-key-api.txt       # Create
-        │               └── public-key-api.txt        # Create
+        ├── api                     
+        │   ├── src    
+        │       ├── main          
+        │           ├── resources           
+        │               ├── secrets                  
+        │                   ├── private-key-api.txt       # Create
+        │                   └── public-key-api.txt        # Create
         └── ...
-   :heavy_exclamation_mark: Please be careful, the names need to match the description. If it does
+   :heavy_exclamation_mark: Please be careful, the names need to match the description. If they do
    not, the App will not be able to read the secrets.
 
 4. Maven build:
