@@ -5,8 +5,7 @@ Algorithmic Trading Bot Application, written in Java and SpringBoot.
 Until now, the App supports trading via Kraken. The bot chooses from a set of strategies and trades
 accordingly, fully automatic.
 
-Current status of master build:
-![Maven CI Build](https://github.com/l0r5/autotrader/workflows/Maven%20CI%20Build/badge.svg)
+![Maven CI Master](https://github.com/l0r5/autotrader/workflows/Maven%20CI%20Master/badge.svg?branch=master)
 
 ## Requirements
 
