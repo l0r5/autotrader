@@ -31,4 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-/src/main/resources/secrets/
+
+
+/api/src/main/resources/secrets/
