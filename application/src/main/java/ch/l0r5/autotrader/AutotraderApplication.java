@@ -10,9 +10,9 @@ import org.springframework.context.annotation.PropertySources;
 		@PropertySource("classpath:api.properties")
 })
 @SpringBootApplication
-public class BrokerApplication {
+public class AutotraderApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BrokerApplication.class, args);
+		SpringApplication.run(AutotraderApplication.class, args);
 	}
 }

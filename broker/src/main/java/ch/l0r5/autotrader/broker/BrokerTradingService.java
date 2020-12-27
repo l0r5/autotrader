@@ -1,33 +1,38 @@
-package ch.l0r5.autotrader;
+package ch.l0r5.autotrader.broker;
 
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import ch.l0r5.autotrader.broker.Broker;
 import ch.l0r5.autotrader.model.Asset;
 import ch.l0r5.autotrader.model.Order;
 import ch.l0r5.autotrader.model.enums.OrderType;
 import ch.l0r5.autotrader.model.enums.Type;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
+@Slf4j
 @Profile("!test")
-public class BrokerStarterService {
+public class BrokerTradingService implements TradingService {
 
     final Broker broker;
 
-    public BrokerStarterService(Broker broker) {
+    public BrokerTradingService(Broker broker) {
         this.broker = broker;
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void startTrader() {
+    @Override
+    public void setStrategy() {
+        log.info("Setting Strategy...");
+    }
+
+    @Override
+    public void startTrading() {
+        log.info("Start Trading...");
         List<Asset> tradeAssets = Collections.singletonList(new Asset("ethchf", new BigDecimal("0.00")));
         Order limitOrder = Order.builder()
                 .pair("xbtchf")
@@ -46,5 +51,11 @@ public class BrokerStarterService {
         broker.updateOpenOrders();
         broker.cancelAllOpenOrders();
         broker.updateOpenOrders();
+    }
+
+    @Override
+    public void stopTrading() {
+        log.info("Stopping Trading...");
+
     }
 }

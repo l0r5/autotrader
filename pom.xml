@@ -52,9 +52,10 @@
     <groupId>ch.l0r5</groupId>
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>model</module>
-        <module>api</module>
+        <module>application</module>
         <module>broker</module>
+        <module>api</module>
+        <module>model</module>
     </modules>
     <name>auto-trader</name>
     <packaging>pom</packaging>
