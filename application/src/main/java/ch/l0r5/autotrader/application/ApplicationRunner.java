@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import ch.l0r5.autotrader.broker.TradingService;
+import ch.l0r5.autotrader.core.trading.TradingService;
 
 @Service
 @Profile("!test")

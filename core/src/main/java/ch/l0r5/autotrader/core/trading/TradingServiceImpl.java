@@ -1,4 +1,4 @@
-package ch.l0r5.autotrader.broker;
+package ch.l0r5.autotrader.core.trading;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import ch.l0r5.autotrader.core.broker.Broker;
 import ch.l0r5.autotrader.model.Asset;
 import ch.l0r5.autotrader.model.Order;
 import ch.l0r5.autotrader.model.enums.OrderType;
@@ -17,11 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @Profile("!test")
-public class BrokerTradingService implements TradingService {
+public class TradingServiceImpl implements TradingService {
 
     final Broker broker;
 
-    public BrokerTradingService(Broker broker) {
+
+    public TradingServiceImpl(Broker broker) {
         this.broker = broker;
     }
 
@@ -51,6 +53,48 @@ public class BrokerTradingService implements TradingService {
         broker.updateOpenOrders();
         broker.cancelAllOpenOrders();
         broker.updateOpenOrders();
+
+        // setTradingBalance (Einsatz)
+        // setPair
+
+        initBroker(new BigDecimal("200"), Collections.singletonList(new Asset("ethchf", new BigDecimal("0.00"))));
+        startTradingRoutine();
+    }
+
+    private void initBroker(BigDecimal tradingBalance, List<Asset> pair) {
+        broker.setTradingBalance(tradingBalance);
+        broker.setTradeAssets(pair);
+        log.info("Initialized Broker with Trading Balance: {}, Trade Asset: {}", tradingBalance, pair);
+    }
+
+    private void startTradingRoutine() {
+
+        Type tradingMode = Type.BUY;
+
+        TradingEngine tradingEngine = new TradingEngine();
+//        BigDecimal signal = tradingEngine.getSignal(tradingMode);
+
+
+        // init (buy) routine
+        // checkPrices
+        // calcSignals (buySignal)     => create ch.l0r5.autotrader.strategy.SignalCalculator.calcSignals()
+        // if signal == true
+        // placeOrder
+        // break
+
+        // sell routine
+        // check prices
+        // calcSignals (sellSignal)
+        // if signal == true
+        // placeOrder
+        // break
+
+        // switch to buy ...
+
+        // if balance <= allowedValue -> SecurityCancel
+
+        // stopTrading
+
     }
 
     @Override

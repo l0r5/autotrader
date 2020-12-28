@@ -1,4 +1,4 @@
-package ch.l0r5.autotrader.broker;
+package ch.l0r5.autotrader.core.broker;
 
 import org.springframework.stereotype.Component;
 
@@ -25,12 +25,14 @@ public class Broker {
     private Map<String, BigDecimal> balances;
     private Map<String, Order> openOrders;
     private List<Asset> tradeAssets;
+    private BigDecimal tradingBalance;
 
     public Broker(PlatformController platformController) {
         this.platformController = platformController;
         this.balances = new HashMap<>();
         this.tradeAssets = new ArrayList<>();
         this.openOrders = new HashMap<>();
+        this.tradingBalance = new BigDecimal("0");
     }
 
     public void updateBalances() {
