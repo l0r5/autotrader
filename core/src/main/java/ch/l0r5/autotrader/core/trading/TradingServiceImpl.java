@@ -72,7 +72,7 @@ public class TradingServiceImpl implements TradingService {
         Type tradingMode = Type.BUY;
 
         TradingEngine tradingEngine = new TradingEngine();
-//        BigDecimal signal = tradingEngine.getSignal(tradingMode);
+        BigDecimal signal = tradingEngine.getSignal(tradingMode);
 
 
         // init (buy) routine
