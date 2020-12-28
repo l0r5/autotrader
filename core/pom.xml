@@ -7,7 +7,7 @@
         <groupId>ch.l0r5</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>broker</artifactId>
+    <artifactId>core</artifactId>
     <dependencies>
         <dependency>
             <artifactId>api</artifactId>

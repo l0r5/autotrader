@@ -10,7 +10,7 @@
     <artifactId>application</artifactId>
     <dependencies>
         <dependency>
-            <artifactId>broker</artifactId>
+            <artifactId>core</artifactId>
             <groupId>ch.l0r5</groupId>
             <scope>compile</scope>
             <version>0.0.1-SNAPSHOT</version>
