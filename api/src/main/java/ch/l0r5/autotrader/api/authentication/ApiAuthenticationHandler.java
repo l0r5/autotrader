@@ -40,7 +40,7 @@ public class ApiAuthenticationHandler {
     }
 
     public ApiKeySignature createSignature(Map<String, String> qParams, String urlPath) {
-        long nonce = new Date().getTime();
+        long nonce = getCurrentTime();
         String message = "nonce=" + nonce + getQueryString(qParams);
         byte[] sha256 = Hashing.sha256()
                 .newHasher()
@@ -60,6 +60,10 @@ public class ApiAuthenticationHandler {
                 .message(message)
                 .signature(signature)
                 .build();
+    }
+
+    protected long getCurrentTime() {
+        return new Date().getTime();
     }
 
     protected String readFromFile(String path) {
