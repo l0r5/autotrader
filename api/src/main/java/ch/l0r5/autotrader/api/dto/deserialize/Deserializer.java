@@ -1,18 +1,10 @@
-package ch.l0r5.autotrader.api.utils;
+package ch.l0r5.autotrader.api.dto.deserialize;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Map;
-
-public class DataFormatUtils {
-
-    public static String getQueryString(Map<String, String> qParams) {
-        StringBuilder result = new StringBuilder();
-        qParams.forEach((k, v) -> result.append("&").append(k).append("=").append(v));
-        return result.toString();
-    }
+public class Deserializer {
 
     public static class Json {
 
@@ -29,6 +21,5 @@ public class DataFormatUtils {
         public static <T> T fromJson(JsonNode node, Class<T> clazz) throws JsonProcessingException {
             return objectMapper.treeToValue(node, clazz);
         }
-
     }
 }

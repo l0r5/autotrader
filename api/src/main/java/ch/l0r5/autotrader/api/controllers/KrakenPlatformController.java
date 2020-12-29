@@ -6,16 +6,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import ch.l0r5.autotrader.api.dto.BalanceDto;
-import ch.l0r5.autotrader.api.dto.DtoMapper;
+import ch.l0r5.autotrader.api.dto.DtoModelMapper;
 import ch.l0r5.autotrader.api.dto.OpenOrdersDto;
-import ch.l0r5.autotrader.api.dto.TickerDto;
+import ch.l0r5.autotrader.api.dto.TradeDto;
+import ch.l0r5.autotrader.api.dto.deserialize.Deserializer;
 import ch.l0r5.autotrader.api.enums.Operation;
-import ch.l0r5.autotrader.api.utils.DataFormatUtils;
 import ch.l0r5.autotrader.model.Order;
+import ch.l0r5.autotrader.model.Trade;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -32,7 +34,7 @@ public class KrakenPlatformController implements PlatformController {
     public BalanceDto getCurrentBalance() {
         BalanceDto balanceDto = new BalanceDto();
         try {
-            balanceDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestCurrentBalance()), BalanceDto.class);
+            balanceDto = Deserializer.Json.fromJson(Deserializer.Json.parse(requestCurrentBalance()), BalanceDto.class);
         } catch (JsonProcessingException e) {
             log.error("Error during Balance update processing: ", e);
         }
@@ -43,8 +45,8 @@ public class KrakenPlatformController implements PlatformController {
     public Map<String, Order> getOpenOrders() {
         Map<String, Order> openOrders = Collections.emptyMap();
         try {
-            OpenOrdersDto openOrdersDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestOpenOrders()).get("result"), OpenOrdersDto.class);
-            openOrders = DtoMapper.mapToOrders(openOrdersDto);
+            OpenOrdersDto openOrdersDto = Deserializer.Json.fromJson(Deserializer.Json.parse(requestOpenOrders()).get("result"), OpenOrdersDto.class);
+            openOrders = DtoModelMapper.mapToOrders(openOrdersDto);
         } catch (JsonProcessingException e) {
             log.error("Error during OpenOrders update processing: ", e);
         }
@@ -73,14 +75,15 @@ public class KrakenPlatformController implements PlatformController {
     }
 
     @Override
-    public TickerDto getTicker(String pair) {
-        TickerDto tickerDto = new TickerDto();
+    public List<Trade> getRecentTrades(String pair, long sinceTime) {
+        List<Trade> recentTrades = Collections.emptyList();
         try {
-            tickerDto = DataFormatUtils.Json.fromJson(DataFormatUtils.Json.parse(requestTicker(pair)).get("result").get(pair.toUpperCase(Locale.ROOT)), TickerDto.class);
+            TradeDto[] recentTradeDtos = Deserializer.Json.fromJson(Deserializer.Json.parse(requestRecentTrades(pair, sinceTime)).get("result").get(pair.toUpperCase(Locale.ROOT)), TradeDto[].class);
+            recentTrades = DtoModelMapper.mapToTrade(recentTradeDtos);
         } catch (JsonProcessingException e) {
-            log.error("Error during GetTicker processing: ", e);
+            log.error("Error during getRecentTrades processing: ", e);
         }
-        return tickerDto;
+        return recentTrades;
     }
 
     private String requestCurrentBalance() {
@@ -95,9 +98,11 @@ public class KrakenPlatformController implements PlatformController {
         return restHandler.makePostCall(qParams, path);
     }
 
-    private String requestTicker(String pair) {
-        Map<String, String> qParams = Collections.singletonMap("pair", pair);
-        String path = "/0/public/" + Operation.TICKER.getCode();
+    private String requestRecentTrades(String pair, long sinceTime) {
+        Map<String, String> qParams = new HashMap<>();
+        qParams.put("pair", pair);
+        qParams.put("since", String.valueOf(sinceTime));
+        String path = "/0/public/" + Operation.TRADES.getCode();
         return restHandler.makePostCall(qParams, path);
     }
 

@@ -4,8 +4,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
 
 import ch.l0r5.autotrader.core.broker.Broker;
 import ch.l0r5.autotrader.model.Asset;
@@ -22,7 +20,6 @@ public class TradingServiceImpl implements TradingService {
 
     final Broker broker;
 
-
     public TradingServiceImpl(Broker broker) {
         this.broker = broker;
     }
@@ -35,7 +32,7 @@ public class TradingServiceImpl implements TradingService {
     @Override
     public void startTrading() {
         log.info("Start Trading...");
-        List<Asset> tradeAssets = Collections.singletonList(new Asset("ethchf", new BigDecimal("0.00")));
+        Asset tradeAsset = new Asset("ethchf", new BigDecimal("0.00"));
         Order limitOrder = Order.builder()
                 .pair("xbtchf")
                 .type(Type.BUY)
@@ -45,26 +42,27 @@ public class TradingServiceImpl implements TradingService {
                 .build();
 
         broker.updateBalances();
-        broker.updatePrices();
+        broker.updateAllTrades(1609264800);
         broker.updateOpenOrders();
-        broker.setTradeAssets(tradeAssets);
-        broker.updatePrices();
-        broker.placeOrder(limitOrder);
-        broker.updateOpenOrders();
-        broker.cancelAllOpenOrders();
-        broker.updateOpenOrders();
+        broker.setTradeAsset(tradeAsset);
+        broker.updateAllTrades(1609264900);
+//        broker.placeOrder(limitOrder);
+//        broker.updateOpenOrders();
+//        broker.cancelAllOpenOrders();
+//        broker.updateOpenOrders();
+
+        initBroker(new BigDecimal("200"), new Asset("ethchf", new BigDecimal("0.00")));
+        startTradingRoutine();
+    }
+
+    private void initBroker(BigDecimal tradingBalance, Asset asset) {
 
         // setTradingBalance (Einsatz)
         // setPair
 
-        initBroker(new BigDecimal("200"), Collections.singletonList(new Asset("ethchf", new BigDecimal("0.00"))));
-        startTradingRoutine();
-    }
-
-    private void initBroker(BigDecimal tradingBalance, List<Asset> pair) {
         broker.setTradingBalance(tradingBalance);
-        broker.setTradeAssets(pair);
-        log.info("Initialized Broker with Trading Balance: {}, Trade Asset: {}", tradingBalance, pair);
+        broker.setTradeAsset(asset);
+        log.info("Initialized Broker with Trading Balance: {}, Trade Asset: {}", tradingBalance, asset);
     }
 
     private void startTradingRoutine() {
@@ -100,6 +98,5 @@ public class TradingServiceImpl implements TradingService {
     @Override
     public void stopTrading() {
         log.info("Stopping Trading...");
-
     }
 }

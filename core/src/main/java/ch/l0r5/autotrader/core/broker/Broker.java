@@ -7,10 +7,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ch.l0r5.autotrader.api.controllers.PlatformController;
 import ch.l0r5.autotrader.model.Asset;
 import ch.l0r5.autotrader.model.Order;
+import ch.l0r5.autotrader.model.Trade;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,15 +27,17 @@ public class Broker {
     private final PlatformController platformController;
     private Map<String, BigDecimal> balances;
     private Map<String, Order> openOrders;
-    private List<Asset> tradeAssets;
+    private Asset tradeAsset;
     private BigDecimal tradingBalance;
+    private List<Trade> allTrades;
 
     public Broker(PlatformController platformController) {
         this.platformController = platformController;
         this.balances = new HashMap<>();
-        this.tradeAssets = new ArrayList<>();
+        this.tradeAsset = new Asset("", new BigDecimal("0"));
         this.openOrders = new HashMap<>();
         this.tradingBalance = new BigDecimal("0");
+        this.allTrades = new ArrayList<>();
     }
 
     public void updateBalances() {
@@ -47,19 +52,17 @@ public class Broker {
         log.info("Updated OpenOrders: {}", openOrders.toString());
     }
 
-    public void updatePrices() {
-        log.info("Updating Prices...");
-        if (tradeAssets.isEmpty()) {
-            log.info("No TradeAssets to update prices.");
+    public void updateAllTrades(long sinceTime) {
+        log.info("Updating AllTrades list...");
+        if (tradeAsset.getPair().isEmpty()) {
+            log.info("No TradeAssets to update Trades for.");
             return;
         }
-        tradeAssets.forEach(asset -> {
-            BigDecimal[] volWeightAverPriceArr = platformController.getTicker(asset.getPair()).getVolWeightAverPriceArr();
-            BigDecimal price = volWeightAverPriceArr[0].add(volWeightAverPriceArr[1]).divide(new BigDecimal("2"), 2);
-            asset.setPrice(price);
-            log.info("Updated Asset: {} with Price: {}.", asset.getPair(), asset.getPrice());
-        });
-        log.info("Updated Prices.");
+        List<Trade> recentTrades = platformController.getRecentTrades(tradeAsset.getPair(), sinceTime);
+        this.allTrades = Stream
+                .concat(allTrades.stream(), recentTrades.stream())
+                .collect(Collectors.toList());
+        log.info("Updated AllTrades list.");
     }
 
     public void placeOrder(Order order) {
