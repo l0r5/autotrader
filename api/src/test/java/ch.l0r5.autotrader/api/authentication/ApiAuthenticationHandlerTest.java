@@ -2,6 +2,7 @@ package ch.l0r5.autotrader.api.authentication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.l0r5.autotrader.api.controllers.RestHandler;
 import ch.l0r5.autotrader.api.enums.Operation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,6 +27,9 @@ class ApiAuthenticationHandlerTest {
 
     @SpyBean
     ApiAuthenticationHandler authHandler;
+
+    @MockBean
+    RestHandler restHandler;
 
     @Test
     void testInit_keysAreNotEmpty() {

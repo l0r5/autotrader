@@ -46,6 +46,7 @@ public class DtoModelMapper {
                     break;
                 case "s":
                     type = Type.SELL;
+                    break;
             }
 
             switch (recentTradeDto.getOrderType()) {
@@ -54,12 +55,13 @@ public class DtoModelMapper {
                     break;
                 case "m":
                     orderType = OrderType.MARKET;
+                    break;
             }
 
             Trade trade = Trade.builder()
                     .price(recentTradeDto.getPrice())
                     .volume(recentTradeDto.getVolume())
-                    .time(recentTradeDto.getTime())
+                    .sinceTime(recentTradeDto.getTime())
                     .type(type)
                     .orderType(orderType)
                     .miscellaneous(recentTradeDto.getMiscellaneous())

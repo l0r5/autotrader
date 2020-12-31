@@ -1,5 +1,6 @@
 package ch.l0r5.autotrader.api.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,20 +15,25 @@ import java.util.Map;
 import ch.l0r5.autotrader.api.authentication.ApiAuthenticationHandler;
 import ch.l0r5.autotrader.api.authentication.ApiKeySignature;
 import ch.l0r5.autotrader.api.config.ApiConfig;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@Getter
+@AllArgsConstructor
 public class RestHandler {
 
     private final RestTemplate restTemplate;
     private final ApiAuthenticationHandler authHandler;
     private final ApiConfig apiConfig;
 
-    public RestHandler(RestTemplate restTemplate, ApiAuthenticationHandler authHandler, ApiConfig apiConfig) {
-        this.restTemplate = restTemplate;
+    @Autowired
+    public RestHandler(ApiAuthenticationHandler authHandler, ApiConfig apiConfig) {
         this.authHandler = authHandler;
         this.apiConfig = apiConfig;
+        this.restTemplate = new RestTemplate();
     }
 
     protected String makePostCall(Map<String, String> qParams, String path) {

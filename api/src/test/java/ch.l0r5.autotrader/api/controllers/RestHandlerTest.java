@@ -1,5 +1,6 @@
 package ch.l0r5.autotrader.api.controllers;
 
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,13 +43,14 @@ class RestHandlerTest {
     RestHandler restHandler;
 
     @Mock
-    RestTemplate mockRestTemplate;
-
-    @Mock
     ApiAuthenticationHandler mockAuthHandler;
 
     @Mock
     ApiConfig mockApiConfig;
+
+    @Mock
+    RestTemplate mockRestTemplate;
+
 
     private ApiKeySignature apiKeySignature;
     private Map<String, String> qParams;
@@ -67,10 +69,9 @@ class RestHandlerTest {
         String path = "0/public/Trades";
         String url = "https://test-url/" + path;
         String mockResponse = "{\"error\":[],\"result\":{\"ETHCHF\":[[\"642.28000\",\"0.02937067\",1609264847.4769,\"b\",\"l\",\"\"],[\"642.28000\",\"0.08179845\",1609264850.5637,\"b\",\"l\",\"\"],[\"642.28000\",\"0.00013067\",1609264850.5654,\"b\",\"l\",\"\"],[\"642.28000\",\"0.00000021\",1609264850.5669,\"b\",\"l\",\"\"]],\"last\":\"1609264850566852989\"}}";
-
         when(mockAuthHandler.createSignature(qParams, path)).thenReturn(apiKeySignature);
-        when(mockApiConfig.getBaseUrl()).thenReturn("https://test-url");
-        when(mockRestTemplate.postForEntity(eq("https://test-url0/public/Trades"), any(), any())).thenReturn(ResponseEntity.ok(mockResponse));
+        when(mockApiConfig.getBaseUrl()).thenReturn("https://test-url/");
+        when(mockRestTemplate.postForEntity(eq(url), any(), any())).thenReturn(ResponseEntity.ok(mockResponse));
         String responseBody = restHandler.makePostCall(qParams, path);
         verify(restHandler, times(1)).createHttpHeaders(apiKeySignature);
         verify(restHandler, times(1)).createMessageBody(qParams, apiKeySignature);
