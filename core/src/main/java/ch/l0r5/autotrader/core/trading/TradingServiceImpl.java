@@ -46,10 +46,10 @@ public class TradingServiceImpl implements TradingService {
         broker.updateOpenOrders();
         broker.setTradeAsset(tradeAsset);
         broker.updateAllTrades(1609264900);
-//        broker.placeOrder(limitOrder);
-//        broker.updateOpenOrders();
-//        broker.cancelAllOpenOrders();
-//        broker.updateOpenOrders();
+        broker.placeOrder(limitOrder);
+        broker.updateOpenOrders();
+        broker.cancelAllOpenOrders();
+        broker.updateOpenOrders();
 
         initBroker(new BigDecimal("200"), new Asset("ethchf", new BigDecimal("0.00")));
         startTradingRoutine();
@@ -59,9 +59,9 @@ public class TradingServiceImpl implements TradingService {
 
         // setTradingBalance (Einsatz)
         // setPair
-
         broker.setTradingBalance(tradingBalance);
         broker.setTradeAsset(asset);
+        broker.updateBalances();
         log.info("Initialized Broker with Trading Balance: {}, Trade Asset: {}", tradingBalance, asset);
     }
 
