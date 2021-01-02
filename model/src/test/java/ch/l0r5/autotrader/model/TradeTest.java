@@ -19,7 +19,7 @@ class TradeTest {
         trade = Trade.builder()
                 .price(new BigDecimal("300"))
                 .volume(new BigDecimal("5000"))
-                .sinceTime(1609264800L)
+                .time(1609264800L)
                 .type(Type.BUY)
                 .orderType(OrderType.LIMIT)
                 .miscellaneous("test")
@@ -30,7 +30,7 @@ class TradeTest {
     void testAttributes() {
         assertEquals(new BigDecimal("300"), trade.getPrice());
         assertEquals(new BigDecimal("5000"), trade.getVolume());
-        assertEquals(1609264800L, trade.getSinceTime());
+        assertEquals(1609264800L, trade.getTime());
         assertEquals(Type.BUY, trade.getType());
         assertEquals(OrderType.LIMIT, trade.getOrderType());
         assertEquals("test", trade.getMiscellaneous());

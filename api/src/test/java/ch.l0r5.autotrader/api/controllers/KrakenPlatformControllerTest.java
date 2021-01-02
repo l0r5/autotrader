@@ -98,7 +98,7 @@ class KrakenPlatformControllerTest {
         assertTrue(recentTrades.stream().findFirst().isPresent());
         assertEquals(new BigDecimal("642.28000"), recentTrades.stream().findFirst().get().getPrice());
         assertEquals(new BigDecimal("0.02937067"), recentTrades.stream().findFirst().get().getVolume());
-        assertEquals(1.609264847E9, recentTrades.stream().findFirst().get().getSinceTime());
+        assertEquals(1.609264847E9, recentTrades.stream().findFirst().get().getTime());
         assertEquals(Type.BUY, recentTrades.stream().findFirst().get().getType());
         assertEquals(OrderType.LIMIT, recentTrades.stream().findFirst().get().getOrderType());
         assertEquals("test", recentTrades.stream().findFirst().get().getMiscellaneous());

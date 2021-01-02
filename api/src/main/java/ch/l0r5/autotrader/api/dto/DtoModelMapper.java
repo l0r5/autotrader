@@ -61,7 +61,7 @@ public class DtoModelMapper {
             Trade trade = Trade.builder()
                     .price(recentTradeDto.getPrice())
                     .volume(recentTradeDto.getVolume())
-                    .sinceTime(recentTradeDto.getTime())
+                    .time(recentTradeDto.getTime())
                     .type(type)
                     .orderType(orderType)
                     .miscellaneous(recentTradeDto.getMiscellaneous())

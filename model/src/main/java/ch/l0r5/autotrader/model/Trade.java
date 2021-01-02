@@ -15,7 +15,7 @@ import lombok.Getter;
 public class Trade {
     private final BigDecimal price;
     private final BigDecimal volume;
-    private final long sinceTime;
+    private final long time;
     private final Type type;
     private final OrderType orderType;
     private final String miscellaneous;
