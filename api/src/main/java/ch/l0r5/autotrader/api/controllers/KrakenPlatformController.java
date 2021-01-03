@@ -1,11 +1,14 @@
 package ch.l0r5.autotrader.api.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -75,15 +78,30 @@ public class KrakenPlatformController implements PlatformController {
     }
 
     @Override
-    public List<Trade> getRecentTrades(String pair, long sinceTime) {
-        List<Trade> recentTrades = Collections.emptyList();
-        try {
-            TradeDto[] recentTradeDtos = Deserializer.Json.fromJson(Deserializer.Json.parse(requestRecentTrades(pair, sinceTime)).get("result").get(pair.toUpperCase(Locale.ROOT)), TradeDto[].class);
-            recentTrades = DtoModelMapper.mapToTrade(recentTradeDtos);
-        } catch (JsonProcessingException e) {
-            log.error("Error during getRecentTrades processing: ", e);
+    public List<Trade> getTradesSince(String pair, long sinceTime) {
+        List<Trade> allTrades = Collections.synchronizedList(new LinkedList<>());
+        List<Trade> recentTrades = new ArrayList<>();
+        long last = sinceTime;
+        synchronized (allTrades) {
+            do {
+                try {
+                    JsonNode jsonResponse = Deserializer.Json.parse(requestRecentTrades(pair, last));
+                    if (!jsonResponse.get("error").isEmpty()) {
+                        log.error("Error while fetching Trades: {}", jsonResponse.get("error").toString());
+                        break;
+                    }
+                    last = Deserializer.Json.fromJson(jsonResponse.get("result").get("last"), Long.class);
+                    TradeDto[] recentTradeDtos = Deserializer.Json.fromJson(jsonResponse.get("result").get(pair.toUpperCase(Locale.ROOT)), TradeDto[].class);
+                    recentTrades = DtoModelMapper.mapToTrade(recentTradeDtos);
+                    allTrades.wait(2000); // 1 call per second allowed;
+                } catch (JsonProcessingException | InterruptedException e) {
+                    log.error("Error during getRecentTrades processing: ", e);
+                }
+                allTrades.addAll(recentTrades);
+
+            } while (recentTrades.size() == 1000);
         }
-        return recentTrades;
+        return allTrades;
     }
 
     private String requestCurrentBalance() {

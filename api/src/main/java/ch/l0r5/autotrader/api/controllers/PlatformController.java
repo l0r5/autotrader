@@ -15,7 +15,7 @@ public interface PlatformController {
 
     void cancelOpenOrder(String refId);
 
-    List<Trade> getRecentTrades(String pair, long sinceTime);
+    List<Trade> getTradesSince(String pair, long sinceTime);
 
     void addOrder(Order order);
 }

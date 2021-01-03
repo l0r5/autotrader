@@ -88,12 +88,12 @@ class KrakenPlatformControllerTest {
     }
 
     @Test
-    void testGetRecentTrades_expectTrades() {
+    void testGetTradesSince_expectTrades() {
         String pair = "ethchf";
         long sinceTime = new Date().getTime();
         String mockMessage = "{\"error\":[],\"result\":{\"ETHCHF\":[[\"642.28000\",\"0.02937067\",1609264847.4769,\"b\",\"l\",\"test\"],[\"642.28000\",\"0.08179845\",1609264850.5637,\"b\",\"l\",\"\"],[\"642.28000\",\"0.00013067\",1609264850.5654,\"b\",\"l\",\"\"],[\"642.28000\",\"0.00000021\",1609264850.5669,\"b\",\"l\",\"\"]],\"last\":\"1609264850566852989\"}}";
         when(restHandler.makePostCall(any(), any())).thenReturn(mockMessage);
-        List<Trade> recentTrades = krakenPlatformController.getRecentTrades(pair, sinceTime);
+        List<Trade> recentTrades = krakenPlatformController.getTradesSince(pair, sinceTime);
         assertNotNull(recentTrades);
         assertTrue(recentTrades.stream().findFirst().isPresent());
         assertEquals(new BigDecimal("642.28000"), recentTrades.stream().findFirst().get().getPrice());
