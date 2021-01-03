@@ -1,5 +1,6 @@
 package ch.l0r5.autotrader.api.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,18 +15,25 @@ import java.util.Map;
 import ch.l0r5.autotrader.api.authentication.ApiAuthenticationHandler;
 import ch.l0r5.autotrader.api.authentication.ApiKeySignature;
 import ch.l0r5.autotrader.api.config.ApiConfig;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@Getter
+@AllArgsConstructor
 public class RestHandler {
 
+    private final RestTemplate restTemplate;
     private final ApiAuthenticationHandler authHandler;
     private final ApiConfig apiConfig;
 
+    @Autowired
     public RestHandler(ApiAuthenticationHandler authHandler, ApiConfig apiConfig) {
         this.authHandler = authHandler;
         this.apiConfig = apiConfig;
+        this.restTemplate = new RestTemplate();
     }
 
     protected String makePostCall(Map<String, String> qParams, String path) {
@@ -34,12 +42,12 @@ public class RestHandler {
         MultiValueMap<String, String> content = createMessageBody(qParams, signature);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(content, headers);
         log.info("Executing POST call with path: {}, qparams: {}", path, qParams.toString());
-        ResponseEntity<String> response = new RestTemplate().postForEntity(apiConfig.getBaseUrl() + path, request, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(apiConfig.getBaseUrl() + path, request, String.class);
         log.info("POST Response: {}", response);
         return response.getBody();
     }
 
-    private HttpHeaders createHttpHeaders(ApiKeySignature signature) {
+    protected HttpHeaders createHttpHeaders(ApiKeySignature signature) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("API-Key", authHandler.getApiPublicKey());
@@ -47,7 +55,7 @@ public class RestHandler {
         return headers;
     }
 
-    private MultiValueMap<String, String> createMessageBody(Map<String, String> qParams, ApiKeySignature signature) {
+    protected MultiValueMap<String, String> createMessageBody(Map<String, String> qParams, ApiKeySignature signature) {
         MultiValueMap<String, String> content = new LinkedMultiValueMap<>();
         content.add("nonce", String.valueOf(signature.getNonce()));
         qParams.forEach(content::add);

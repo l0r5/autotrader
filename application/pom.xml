@@ -7,10 +7,10 @@
         <groupId>ch.l0r5</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>api</artifactId>
+    <artifactId>application</artifactId>
     <dependencies>
         <dependency>
-            <artifactId>model</artifactId>
+            <artifactId>core</artifactId>
             <groupId>ch.l0r5</groupId>
             <scope>compile</scope>
             <version>0.0.1-SNAPSHOT</version>
@@ -23,4 +23,5 @@
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
+
 </project>

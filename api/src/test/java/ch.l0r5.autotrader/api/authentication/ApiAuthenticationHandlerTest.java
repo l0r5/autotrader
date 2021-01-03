@@ -1,8 +1,9 @@
 package ch.l0r5.autotrader.api.authentication;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -10,20 +11,25 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.l0r5.autotrader.api.controllers.RestHandler;
 import ch.l0r5.autotrader.api.enums.Operation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest
 @DirtiesContext
 @ActiveProfiles("test")
 class ApiAuthenticationHandlerTest {
 
-    @Autowired
+    @SpyBean
     ApiAuthenticationHandler authHandler;
+
+    @MockBean
+    RestHandler restHandler;
 
     @Test
     void testInit_keysAreNotEmpty() {
@@ -47,10 +53,16 @@ class ApiAuthenticationHandlerTest {
 
     @Test
     void testCreateSignature_withOpenOrders_expectSignature() {
+        long nonce = 1609273932928L;
         Map<String, String> qParams = new HashMap<>();
         String path = "/0/private/" + Operation.OPEN_ORDERS.getCode();
+        doReturn(nonce).when(authHandler).getCurrentTime();
         ApiKeySignature signature = authHandler.createSignature(qParams, path);
         assertFalse(signature.getSignature().isEmpty());
+        assertEquals(nonce, signature.getNonce());
+        assertEquals("nonce=1609273932928", signature.getMessage());
+        assertEquals("/0/private/OpenOrders", signature.getUrlPath());
+        assertEquals("0uCEneFcczGZ5LVDUlokwR3K0aqwI4y8w2pCJBVhhZE87PuMKcMMn8OXHNEsBXYhnBISLl64sgjHhc+Q3kAv9g==", signature.getSignature());
     }
 
     @Test

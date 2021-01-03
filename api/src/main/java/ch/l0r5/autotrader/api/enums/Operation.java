@@ -5,7 +5,7 @@ public enum Operation {
     OPEN_ORDERS("OpenOrders"),
     ADD_ORDER("AddOrder"),
     CANCEL_ORDER("CancelOrder"),
-    TICKER("Ticker");
+    TRADES("Trades");
 
     private final String code;
 

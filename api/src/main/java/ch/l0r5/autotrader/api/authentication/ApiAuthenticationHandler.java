@@ -14,7 +14,6 @@ import java.util.Scanner;
 import javax.annotation.PostConstruct;
 
 import ch.l0r5.autotrader.api.config.ApiConfig;
-import ch.l0r5.autotrader.api.utils.DataFormatUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,8 +40,8 @@ public class ApiAuthenticationHandler {
     }
 
     public ApiKeySignature createSignature(Map<String, String> qParams, String urlPath) {
-        long nonce = new Date().getTime();
-        String message = "nonce=" + nonce + DataFormatUtils.getQueryString(qParams);
+        long nonce = getCurrentTime();
+        String message = "nonce=" + nonce + getQueryString(qParams);
         byte[] sha256 = Hashing.sha256()
                 .newHasher()
                 .putString(nonce + message, UTF_8)
@@ -63,6 +62,10 @@ public class ApiAuthenticationHandler {
                 .build();
     }
 
+    protected long getCurrentTime() {
+        return new Date().getTime();
+    }
+
     protected String readFromFile(String path) {
         File secretFile = new File(path);
         String keyData = null;
@@ -75,5 +78,11 @@ public class ApiAuthenticationHandler {
             log.error("API Secret not found: ", e);
         }
         return keyData;
+    }
+
+    private String getQueryString(Map<String, String> qParams) {
+        StringBuilder result = new StringBuilder();
+        qParams.forEach((k, v) -> result.append("&").append(k).append("=").append(v));
+        return result.toString();
     }
 }

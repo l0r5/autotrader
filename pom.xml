@@ -21,12 +21,36 @@
             </plugins>
         </pluginManagement>
     </build>
+    <description>Bot that trades automatically with cryptos.</description>
+    <groupId>ch.l0r5</groupId>
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>application</module>
+        <module>core</module>
+        <module>api</module>
+        <module>model</module>
+    </modules>
+    <name>auto-trader</name>
+
+    <packaging>pom</packaging>
+
+    <parent>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <relativePath />
+        <version>2.4.1</version> <!-- lookup parent from repository -->
+    </parent>
+    <properties>
+        <guava.version>20.0</guava.version>
+        <jackson.version>2.11.1</jackson.version>
+        <java.version>1.8</java.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <artifactId>spring-boot-starter-web</artifactId>
             <groupId>org.springframework.boot</groupId>
         </dependency>
-
         <dependency>
             <artifactId>lombok</artifactId>
             <groupId>org.projectlombok</groupId>
@@ -48,30 +72,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <description>Bot that trades automatically with cryptos.</description>
-    <groupId>ch.l0r5</groupId>
-    <modelVersion>4.0.0</modelVersion>
-    <modules>
-        <module>model</module>
-        <module>api</module>
-        <module>broker</module>
-    </modules>
-    <name>auto-trader</name>
-    <packaging>pom</packaging>
-
-    <parent>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <groupId>org.springframework.boot</groupId>
-        <relativePath />
-        <version>2.4.1</version> <!-- lookup parent from repository -->
-    </parent>
-
-    <properties>
-        <guava.version>20.0</guava.version>
-        <jackson.version>2.11.1</jackson.version>
-        <java.version>1.8</java.version>
-    </properties>
 
     <version>0.0.1-SNAPSHOT</version>
-
 </project>
