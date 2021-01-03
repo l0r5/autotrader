@@ -1,4 +1,4 @@
-package ch.l0r5.autotrader.core.trading;
+package ch.l0r5.autotrader.core.calculation;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,7 +85,7 @@ class CalculationEngineTest {
         testVolumesForVWMA.add(new BigDecimal("3000"));
         testVolumesForVWMA.add(new BigDecimal("4500"));
         testVolumesForVWMA.add(new BigDecimal("6000"));
-        BigDecimal resultVWMA = calculationEngine.calcVWMAsforPeriod(testWAPsForVWMA, testVolumesForVWMA);
+        BigDecimal resultVWMA = calculationEngine.calcIntervalVWMAs(testWAPsForVWMA, testVolumesForVWMA);
         assertEquals(new BigDecimal("351.11111112"), resultVWMA);
     }
 
@@ -116,7 +116,7 @@ class CalculationEngineTest {
                 .orderType(OrderType.LIMIT)
                 .miscellaneous("test")
                 .build());
-        Map<Long, Map<String, BigDecimal>> resultVWMA = calculationEngine.getPeriodVolumeVWAP(testTrades, 10);
+        Map<Long, Map<String, BigDecimal>> resultVWMA = calculationEngine.calcIntervalVWAPs(testTrades, 10);
         assertEquals(2, resultVWMA.size());
         assertEquals(new BigDecimal("300.76923077"), resultVWMA.get(1609264800L).get("vwap"));
         assertEquals(new BigDecimal("5200"), resultVWMA.get(1609264800L).get("volume"));
@@ -140,7 +140,7 @@ class CalculationEngineTest {
         List<BigDecimal> volumesPerInterval = new ArrayList<>();
         volumesPerInterval.add(new BigDecimal("4"));
         volumesPerInterval.add(new BigDecimal("2"));
-        assertEquals(new BigDecimal("6"), calculationEngine.calcIntervalVolumeSum(volumesPerInterval));
+        assertEquals(new BigDecimal("6"), calculationEngine.calcVolumeSum(volumesPerInterval));
     }
 
 }
