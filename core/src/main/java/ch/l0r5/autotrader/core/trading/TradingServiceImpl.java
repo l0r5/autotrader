@@ -69,8 +69,8 @@ public class TradingServiceImpl implements TradingService {
 
         Type tradingMode = Type.BUY;
 
-        TradingEngine tradingEngine = new TradingEngine();
-        BigDecimal signal = tradingEngine.getSignal(tradingMode);
+        CalculationEngine calculationEngine = new CalculationEngine();
+//        BigDecimal signal = calculationEngine.getSignal(tradingMode);
 
 
         // init (buy) routine
