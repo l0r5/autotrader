@@ -58,7 +58,7 @@ public class Broker {
             log.info("No TradeAssets to update Trades for.");
             return;
         }
-        List<Trade> recentTrades = platformController.getRecentTrades(tradeAsset.getPair(), sinceTime);
+        List<Trade> recentTrades = platformController.getTradesSince(tradeAsset.getPair(), sinceTime);
         this.allTrades = Stream
                 .concat(allTrades.stream(), recentTrades.stream())
                 .collect(Collectors.toList());
