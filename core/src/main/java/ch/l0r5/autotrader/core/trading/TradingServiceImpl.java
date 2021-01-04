@@ -65,8 +65,8 @@ public class TradingServiceImpl implements TradingService {
     private void startTradingRoutine() {
         Type tradingMode = Type.BUY;
         CalculationEngine calculationEngine = new CalculationEngine();
-        broker.updateAllTrades(1609592686);
-        Map<Long, Map<String, BigDecimal>> vwmas = calculationEngine.getVWMAs(broker.getAllTrades(), 60, 3);
+        broker.updateAllTrades(1609796193);
+        Map<Long, Map<String, BigDecimal>> vwma = calculationEngine.getVWMAs(broker.getAllTrades(), 60, 3);
 
 
         // init (buy) routine
