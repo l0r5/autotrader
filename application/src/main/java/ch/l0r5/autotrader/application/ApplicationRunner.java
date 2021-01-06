@@ -5,15 +5,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import ch.l0r5.autotrader.core.trading.TradingService;
+import ch.l0r5.autotrader.core.trading.ITradingService;
 
 @Service
 @Profile("!test")
 public class ApplicationRunner {
 
-    final TradingService tradingService;
+    final ITradingService tradingService;
 
-    public ApplicationRunner(TradingService tradingService) {
+    public ApplicationRunner(ITradingService tradingService) {
         this.tradingService = tradingService;
     }
 
